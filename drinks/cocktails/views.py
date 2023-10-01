@@ -42,7 +42,7 @@ def search(request):
 def detail_cocktail(request, drinkID):
     drink = get_object_or_404(Drink, id=drinkID)
     last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
-    last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
+    last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails) >= 2 else None
 
     is_user_liked = False
     if request.user.is_authenticated:

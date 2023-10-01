@@ -33,7 +33,7 @@ Dashboard
                     <p class="card-text">{{ drink.description }}</p>
                     <ul>
                         {% for ingredient in drink.ingredients.all %}
-                            <li>{{ ingredient.name }} | {{ ingredient.amount }} {{ ingredient.unit }}</li>
+                            <li>{{ ingredient.product.name }} | {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
                         {% endfor %}
                     </ul>
                     <a href="{% url 'delete_drink' postId=drink.id %}" class="btn btn-danger float-end">Usuń</a>

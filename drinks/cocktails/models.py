@@ -15,20 +15,23 @@ def random_string(length):
     return ''.join(random.choice(letters) for _ in range(length))
 
 
-class Ingredient(models.Model):
-    unit_type = (('ml', 'mililitr'), ('szt', 'sztuk'), ('g', 'gram'))
+class Product(models.Model):
     name = models.CharField(max_length=220)
-    amount = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(300)],
-                                         blank=True)
-    unit = models.CharField(default='ml', choices=unit_type, max_length=3)
 
     def __str__(self):
-        return f'{self.name}  |  {self.amount} {self.unit}'
+        return self.name
+
+
+class UnitType(models.Model):
+    name = models.CharField(max_length=20)
+    short_name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f'{self.name} [{self.short_name}]'
 
 
 class Drink(models.Model):
     name = models.CharField(max_length=100, blank=False)
-    ingredients = models.ManyToManyField(Ingredient)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
@@ -40,6 +43,10 @@ class Drink(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.creation_date} | {self.description}'
+
+    @property
+    def ingredients(self):
+        return Ingredient.objects.filter(drink=self)
 
     @property
     def is_liked_by_user(self):
@@ -72,6 +79,24 @@ class Drink(models.Model):
                                                  thumbnail_io.tell(), None), save=False)
 
         return self.thumbnail
+
+
+class Ingredient(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    unit = models.ForeignKey(
+        UnitType,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    amount = models.PositiveIntegerField(default=1)
+    drink = models.ForeignKey(Drink, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.drink.name}  | {self.product.name}  |  {self.amount} {self.unit.short_name}'
 
 
 class Like(models.Model):

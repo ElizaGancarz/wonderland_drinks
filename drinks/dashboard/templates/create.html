@@ -1,53 +1,42 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Add drink
+    Add drink
 {% endblock title %}
 
 {% block content %}
 
-{% if error%}
-    {{error}}
-{% endif%}
+    {% if error %}
+        {{ error }}
+    {% endif %}
 
-<div class="container mt-5">
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">Dodaj swój przepis na drinka:</div>
                     <div class="card-body">
-                         <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+                        <template id="ingredient_formset_empty_form">{{ ingredient_formset }}</template>
+                        <form action="{% url 'create' %}" id="id_html_form" method="post" autocomplete="off" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <div class="form-group">
-                                  {{ form }}
-                                <div class="row">
-                                    <div class="col-md-10">
-                                        <div class="form-group" id="ingredients-container">
-                                            <select class="form-control mb-2"name="ingredient_1">
-                                                <option value="" selected disabled>Wybierz składnik</option>
-                                                {% for ingredient in ingredients %}
-                                                    <option value="{{ ingredient.id }}">{{ ingredient.name }} {{ ingredient.amount }} {{ ingredient.unit }}</option>
-                                                {% endfor %}
-                                                <option value="other">Dodaj nowy składnik</option>
-                                            </select>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                            <button type="button" class="btn btn-primary" onclick="cloneSelect()">
-                                                <i class="bi bi-plus">+</i>
-                                            </button>
-
-                                    </div>
+{#                            <div class="form-group">#}
+                                <div id="drink_form">
+                                    {{ drink_form }}
                                 </div>
-                                <input type="text" class="form-control mb-2" name="new_ingredient" placeholder="Nowy składnik">
-                                <input type="text" class="form-control mb-2" name="new_ingredient_amount" placeholder="Ilość">
-                                <input type="text" class="form-control mb-2" name="new_ingredient_unit" placeholder="Jednostka">
-                            </div>
 
-                            <button type="submit" class="btn btn-primary mt-2">Dodaj</button>
+                                <table id="ingredient_formset_container">
+                                    {{ ingredient_formset }}
+                                </table>
+                                <div id="ingredient_formset_add_button" style="text-decoration: underline; cursor: pointer;">Add</div>
+                                <input id="ingredient_formset_submit_button" type="submit" value="Submit">
+{#                                <div class="col-md-2">#}
+{#                                    <button type="button" class="btn btn-primary" onclick="addForm()">#}
+{#                                        <i class="bi bi-plus">+</i>#}
+{#                                    </button>#}
 
-
+{#                                </div>#}
+{#                            </div>#}
+{#                            <button type="submit" class="btn btn-primary mt-2">Dodaj</button>#}
                         </form>
                     </div>
                 </div>
