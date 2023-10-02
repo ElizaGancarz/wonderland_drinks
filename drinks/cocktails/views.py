@@ -1,8 +1,10 @@
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Drink, Like
+from .models import Drink, Like, Ingredient
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 def home(request):
@@ -17,30 +19,36 @@ def home(request):
 
 
 def search(request):
-    query = request.GET.get('q')
-    drinks = Drink.objects.filter(name__icontains=query) | Drink.objects.filter(ingredients__name__icontains=query)
-    drinks = drinks.distinct()
-    total_count = drinks.count()
-    last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
-    last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
+    if request.method == 'GET':
+        query = request.GET.get('q')
+        drinks = Drink.objects.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(ingredient__product__name__icontains=query)
+        ).distinct()
+        total_count = drinks.count()
+        last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
+        last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
 
-    paginator = Paginator(drinks, 8)
-    page_number = request.GET.get('page')
+        paginator = Paginator(drinks, 8)
+        page_number = request.GET.get('page')
 
-    try:
-        drinks = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        drinks = paginator.page(1)
-    except EmptyPage:
-        drinks = paginator.page(paginator.num_pages)
+        try:
+            drinks = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            drinks = paginator.page(1)
+        except EmptyPage:
+            drinks = paginator.page(paginator.num_pages)
 
-    context = {'drinks': drinks, 'last_cocktails': last_added_cocktails, 'query': query, 'total_count': total_count}
+        context = {'drinks': drinks, 'last_cocktails': last_added_cocktails, 'query': query, 'total_count': total_count}
 
-    return render(request, 'search_results.html', context)
+        return render(request, 'search_results.html', context)
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['GET'])
 
 
-def detail_cocktail(request, drinkID):
-    drink = get_object_or_404(Drink, id=drinkID)
+def detail_cocktail(request, drink_id):
+    drink = get_object_or_404(Drink, id=drink_id)
     last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
     last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails) >= 2 else None
 
