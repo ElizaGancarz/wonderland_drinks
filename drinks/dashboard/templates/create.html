@@ -5,7 +5,6 @@
 {% endblock title %}
 
 {% block content %}
-
     {% if error %}
         {{ error }}
     {% endif %}
@@ -16,31 +15,108 @@
                 <div class="card">
                     <div class="card-header">Dodaj swój przepis na drinka:</div>
                     <div class="card-body">
-                        <template id="ingredient_formset_empty_form">{{ ingredient_formset }}</template>
+                        <template id="ingredient_formset_empty_form">{{ ingredient_formset.empty_form }}</template>
                         <form action="{% url 'create' %}" id="id_html_form" method="post" autocomplete="off" enctype="multipart/form-data">
                             {% csrf_token %}
-{#                            <div class="form-group">#}
-                                <div id="drink_form">
-                                    {{ drink_form }}
-                                </div>
+                            <div id="drink_form" class="form-group">
+                                {{ drink_form }}
+                            </div>
 
-                                <table id="ingredient_formset_container">
-                                    {{ ingredient_formset }}
-                                </table>
-                                <div id="ingredient_formset_add_button" style="text-decoration: underline; cursor: pointer;">Add</div>
-                                <input id="ingredient_formset_submit_button" type="submit" value="Submit">
-{#                                <div class="col-md-2">#}
-{#                                    <button type="button" class="btn btn-primary" onclick="addForm()">#}
-{#                                        <i class="bi bi-plus">+</i>#}
-{#                                    </button>#}
-
-{#                                </div>#}
-{#                            </div>#}
-{#                            <button type="submit" class="btn btn-primary mt-2">Dodaj</button>#}
+                            <table id="ingredient_formset_table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Produkt</th>
+                                        <th>Ilość</th>
+                                        <th>Jednostka</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{ ingredient_formset.management_form }}
+                                    {% for form in ingredient_formset %}
+                                        <tr class="formset-row">
+                                            <td>{{ form.product }}</td>
+                                            <td>{{ form.amount }}</td>
+                                            <td>{{ form.unit }}</td>
+                                            <td><button type="button" class="remove-row">Usuń</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div id="ingredient_formset_add_button" style="text-decoration: underline; cursor: pointer;">Dodaj składnik</div>
+                            <input id="ingredient_formset_submit_button" type="submit" value="Dodaj">
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.getElementById("ingredient_formset_table");
+            const emptyFormTemplate = document.getElementById("ingredient_formset_empty_form");
+            const addButton = document.getElementById("ingredient_formset_add_button");
+            const submitButton = document.getElementById("ingredient_formset_submit_button");
+            const managementForm = document.getElementById("id_ingredient_set-TOTAL_FORMS");
+
+            // Function to add a new formset row to the table
+            function addFormsetRow() {
+                const newRow = document.createElement("tr");
+                newRow.className = "formset-row";
+                newRow.innerHTML = emptyFormTemplate.innerHTML.replace(/__prefix__/g, managementForm.value);
+
+                // Remove labels and empty <th> elements from the newly added row
+                newRow.querySelectorAll("th").forEach(function (element) {
+                    element.parentNode.removeChild(element);
+                });
+
+                // Add a remove button to the new row
+                const removeButtonCell = document.createElement("td");
+                removeButtonCell.innerHTML = '<button type="button" class="remove-row">Usuń</button>';
+                newRow.appendChild(removeButtonCell);
+
+                table.querySelector("tbody").appendChild(newRow);
+                managementForm.value = (parseInt(managementForm.value) + 1).toString();
+            }
+
+            // Function to remove a formset row
+            function removeFormsetRow(row) {
+                row.parentNode.removeChild(row);
+            }
+
+            // Event listener for the add button
+            addButton.addEventListener("click", function () {
+                addFormsetRow();
+            });
+
+            // Event listener for remove links
+            table.addEventListener("click", function (event) {
+                if (event.target.classList.contains("remove-row")) {
+                    const row = event.target.closest(".formset-row");
+                    if (row) {
+                        removeFormsetRow(row);
+                    }
+                }
+            });
+
+
+            submitButton.addEventListener("click", function (event) {
+                // get all ingredient forms and renumber them
+                const ingredientForms = document.querySelectorAll("#ingredient_formset_table .formset-row");
+                ingredientForms.forEach(function (form, index) {
+                    form.querySelectorAll("input, select").forEach(function (element) {
+                        // Update the name and id attributes of input and select elements
+                        if (element.hasAttribute("name")) {
+                            element.name = element.name.replace(/-\d+-/g, "-" + index + "-");
+                        }
+                        if (element.hasAttribute("id")) {
+                            element.id = element.id.replace(/-\d+-/g, "-" + index + "-");
+                        }
+                    });
+                });
+                managementForm.value = ingredientForms.length.toString();
+            });
+        });
+    </script>
 {% endblock content %}

@@ -24,7 +24,7 @@ def create(request):
 
     elif request.method == 'POST':
         drink_form = DrinkForm(request.POST, request.FILES)
-        print('Check if valid')
+        ingredients_formset = IngredientFormset(data=request.POST)
         if drink_form.is_valid():
             drink = drink_form.save(commit=False)
             if 'image' in request.FILES:
@@ -32,16 +32,10 @@ def create(request):
             drink.owner = request.user
             ingredients_formset = IngredientFormset(data=request.POST, instance=drink)
             if ingredients_formset.is_valid():
-                print("Ingreddients Valid!")
                 drink.save()
-                ingredients = ingredients_formset.save()
-                print(ingredients)
+                ingredients_formset.save()
                 return redirect('dashboard')
-            return render(request, 'create.html', {'drink_form': drink_form, 'ingredient_formset': ingredients_formset})
-        else:
-            error = 'Coś poszło nie tak!'
-            ingredients_formset = IngredientFormset(data=request.POST)
-            return render(request, 'create.html', {'drink_form': drink_form, 'ingredient_formset': ingredients_formset})
+        return render(request, 'create.html', {'drink_form': drink_form, 'ingredient_formset': ingredients_formset})
     else:
         return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
 

@@ -60,8 +60,9 @@ IngredientFormset = inlineformset_factory(
         fields=['product', 'amount', 'unit'],
         absolute_max=30,
         max_num=30,
+        min_num=1,
         form=IngredientForm,
-        # extra=1,
-        # can_delete=False,
-        # can_delete_extra=False,
+        extra=0,
+        can_delete=False,
+        can_delete_extra=False,
     )
