@@ -252,7 +252,7 @@ article.sample-col-para img {
 }
 
 .scrollingX {
-  animation: scroll 45s linear infinite;
+  animation: scroll 120s linear infinite;
 }
 
 .marquee-wrapper:hover .scrollingX {
