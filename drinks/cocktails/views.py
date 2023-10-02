@@ -15,7 +15,7 @@ def home(request):
     pined_home = pined_home if len(pined_home) > 1 else None
 
     return render(request, 'home.html',
-                  {'last_cocktails1': first_half, 'last_cocktails2': second_half, 'pined_home': pined_home})
+                  {'last_cocktails1': first_half, 'last_cocktails2': second_half, 'pined_home': pined_home, 'display_barmans':True})
 
 
 def search(request):
@@ -40,7 +40,7 @@ def search(request):
         except EmptyPage:
             drinks = paginator.page(paginator.num_pages)
 
-        context = {'drinks': drinks, 'last_cocktails': last_added_cocktails, 'query': query, 'total_count': total_count}
+        context = {'drinks': drinks, 'last_cocktails1': last_added_cocktails, 'query': query, 'total_count': total_count}
 
         return render(request, 'search_results.html', context)
     else:
@@ -59,7 +59,7 @@ def detail_cocktail(request, drink_id):
             is_user_liked = True
 
     context = {'drink': drink,
-               'last_cocktails': last_added_cocktails,
+               'last_cocktails1': last_added_cocktails,
                'is_user_liked': is_user_liked,
                }
 

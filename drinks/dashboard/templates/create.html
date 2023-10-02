@@ -1,14 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base.html' %}
 
 {% block title %}
-    Add drink
+    Dodaj drinka
 {% endblock title %}
 
-{% block content %}
-    {% if error %}
-        {{ error }}
-    {% endif %}
-
+{% block app_content %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -16,7 +12,8 @@
                     <div class="card-header">Dodaj swój przepis na drinka:</div>
                     <div class="card-body">
                         <template id="ingredient_formset_empty_form">{{ ingredient_formset.empty_form }}</template>
-                        <form action="{% url 'create' %}" id="id_html_form" method="post" autocomplete="off" enctype="multipart/form-data">
+                        <form action="{% url 'create' %}" id="id_html_form" method="post" autocomplete="off"
+                              enctype="multipart/form-data">
                             {% csrf_token %}
                             <div id="drink_form" class="form-group">
                                 {{ drink_form }}
@@ -24,26 +21,30 @@
 
                             <table id="ingredient_formset_table" class="table">
                                 <thead>
-                                    <tr>
-                                        <th>Produkt</th>
-                                        <th>Ilość</th>
-                                        <th>Jednostka</th>
-                                        <th></th>
-                                    </tr>
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Ilość</th>
+                                    <th>Jednostka</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {{ ingredient_formset.management_form }}
-                                    {% for form in ingredient_formset %}
-                                        <tr class="formset-row">
-                                            <td>{{ form.product }}</td>
-                                            <td>{{ form.amount }}</td>
-                                            <td>{{ form.unit }}</td>
-                                            <td><button type="button" class="remove-row">Usuń</button></td>
-                                        </tr>
-                                    {% endfor %}
+                                {{ ingredient_formset.management_form }}
+                                {% for form in ingredient_formset %}
+                                    <tr class="formset-row">
+                                        <td>{{ form.product }}</td>
+                                        <td>{{ form.amount }}</td>
+                                        <td>{{ form.unit }}</td>
+                                        <td>
+                                            <button type="button" class="remove-row">Usuń</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
-                            <div id="ingredient_formset_add_button" style="text-decoration: underline; cursor: pointer;">Dodaj składnik</div>
+                            <div id="ingredient_formset_add_button"
+                                 style="text-decoration: underline; cursor: pointer;">Dodaj składnik
+                            </div>
                             <input id="ingredient_formset_submit_button" type="submit" value="Dodaj">
                         </form>
                     </div>
@@ -66,7 +67,7 @@
                 newRow.className = "formset-row";
                 newRow.innerHTML = emptyFormTemplate.innerHTML.replace(/__prefix__/g, managementForm.value);
 
-                // Remove labels and empty <th> elements from the newly added row
+                // Remove unnecessary <th> elements from the newly added row
                 newRow.querySelectorAll("th").forEach(function (element) {
                     element.parentNode.removeChild(element);
                 });
@@ -76,7 +77,10 @@
                 removeButtonCell.innerHTML = '<button type="button" class="remove-row">Usuń</button>';
                 newRow.appendChild(removeButtonCell);
 
+                // Add the new row to the table
                 table.querySelector("tbody").appendChild(newRow);
+
+                // Increment the management form's count
                 managementForm.value = (parseInt(managementForm.value) + 1).toString();
             }
 
@@ -90,7 +94,7 @@
                 addFormsetRow();
             });
 
-            // Event listener for remove links
+            // Event listener for removing ingredient rows
             table.addEventListener("click", function (event) {
                 if (event.target.classList.contains("remove-row")) {
                     const row = event.target.closest(".formset-row");
@@ -100,23 +104,28 @@
                 }
             });
 
-
+            // Event listener for submit button
             submitButton.addEventListener("click", function (event) {
-                // get all ingredient forms and renumber them
+                // get all ingredient forms - rows with class "formset-row"
                 const ingredientForms = document.querySelectorAll("#ingredient_formset_table .formset-row");
+
+                // iterate over all ingredient forms and update their input and select elements
                 ingredientForms.forEach(function (form, index) {
+                    // select all input and select elements in the form
                     form.querySelectorAll("input, select").forEach(function (element) {
-                        // Update the name and id attributes of input and select elements
+                        // update the element's name attribute
                         if (element.hasAttribute("name")) {
                             element.name = element.name.replace(/-\d+-/g, "-" + index + "-");
                         }
+                        // update the element's id attribute
                         if (element.hasAttribute("id")) {
                             element.id = element.id.replace(/-\d+-/g, "-" + index + "-");
                         }
                     });
                 });
+                // update the management form's count
                 managementForm.value = ingredientForms.length.toString();
             });
         });
     </script>
-{% endblock content %}
+{% endblock app_content %}

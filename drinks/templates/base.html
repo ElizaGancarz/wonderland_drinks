@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title%}Drinks {% endblock title%}</title>
+    <title>{% block title %}Drinks {% endblock title %}</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
 
@@ -14,173 +14,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://api.fontshare.com/v2/css?f[]=gambetta@1,2&f[]=general-sans@1,2&display=swap" rel="stylesheet">
-    <link rel="stylesheetlike" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheetlike"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 <body>
 <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand" href="/"><img src="{% static 'images/logo.png' %}" alt="coctail creations"></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/"><img src="{% static 'images/logo.png' %}" alt="coctail creations"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="nav nav-pills">
-                    {% if not user.is_authenticated%}
-                        {% if request.path != '/login/' %}
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="nav nav-pills">
+                {% if not user.is_authenticated %}
+                    {% if request.path != '/login/' %}
                         <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="{% url 'login_user'%}">Zaloguj</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'login_user' %}">Zaloguj</a>
                         </li>
-                        {% endif %}
-                        {% if request.path != '/register/' %}
+                    {% endif %}
+                    {% if request.path != '/register/' %}
                         <li class="nav-item">
-                          <a class="nav-link" href="{% url 'register'%}">Rejestracja</a>
+                            <a class="nav-link" href="{% url 'register' %}">Rejestracja</a>
                         </li>
-                        {% endif %}
                     {% endif %}
-                    {% if user.is_authenticated%}
-                        {% if request.path != '/dashboard/' %}
-                            <li class="nav-item">
-                              <a class="nav-link" href="{% url 'dashboard'%}">Panel klienta</a>
-                            </li>
-                        {% endif %}
-                            <li class="nav-item">
-                              <a class="nav-link" href="{% url 'logout_user'%}">Wyloguj</a>
-                            </li>
-                            <li class="nav-item">
-                              <a class="nav-link" href="{% url 'change_password'%}">Zmień hasło</a>
-                            </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if request.path != '/dashboard/' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">Panel klienta</a>
+                        </li>
                     {% endif %}
-                  </ul>
-            </div>
-
-        </nav>
-
-    </div>
-
-<header>
-    <div class="container text-center">
-       <h1 class="slogan"> Koktajle, które ożywią Twoje zmysły</h1>
-        {% block search %}
-
-        {% endblock search %}
-    </div>
-</header>
-
-{% if is_homepage %}
-    <section class="parallax"></section>
-    {% if pined_home %}
-        <section class="container mb-5">
-                    <div class="marquee-wrapper" style="user-select: none;">
-                        <div class="marquee-content scrollingX">
-                            {% for cocktail in pined_home %}
-                                <div class="card-testimonial">
-                                    <article>
-                                        <a href="{% url 'detail_cocktail' cocktail.id %}">
-                                            <picture>
-                                                <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                                                <img src="{{ cocktail.image.url }}" alt="{{ cocktail.name }}">
-                                            </picture>
-                                            <h4>{{ cocktail.name }}</h4>
-                                        </a>
-
-                                        <article class="short-description">
-                                            <p>{{ cocktail.description }}</p>
-                                        </article>
-                                    </article>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-        </section>
-        {% endif %}
-<section class="parallax"></section>
-<section class="container mb-5">
-    {% block contenthome %}
-
-
-    {% endblock contenthome %}
-</section>
-
-<section class="parallax"></section>
-
-<section>
-    <div class="container text-center">
-        <h2>Nasz zespół doświadczonych barmanów!</h2>
-        <div class="row row-cols-1 row-cols-md-2 g-4 mt-2">
-            <div class="col">
-            <div class="card">
-                <img src="{% static 'images/piotr.jpg' %}" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title">Piotr</h5>
-                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-            </div>
-            <div class="col">
-            <div class="card">
-                <img src="{% static 'images/kamila.png' %}" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title">Kamila</h5>
-                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
-            </div>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout_user' %}">Wyloguj</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'change_password' %}">Zmień hasło</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-      </div>
-</section>
-{% else %}
 
-    {% block content %}
+    </nav>
 
-
-    {% endblock content %}
-
-{% endif %}
-
-<footer>
-    <div class="container mt-2 mb-2 text-center"><p>&copy; 2023 Cocktail Creations. Wszystkie prawa zastrzeżone.</p></div>
-</footer>
-
+</div>
 <div class="container">
     {% bootstrap_messages %}
 
     {% bootstrap_javascript %}
     <script src="{% static 'js/main.js' %}"></script>
-
-
-
 </div>
 
+{% block content %}
+
+{% endblock content %}
+
+<footer>
+    <div class="container mt-2 mb-2 text-center"><p>&copy; 2023 Cocktail Creations. Wszystkie prawa zastrzeżone.</p>
+    </div>
+</footer>
+
 {% block top_button %}
-<button id="top-button" class="btn btn-primary d-none" onclick="topFunction()" title="Go to top"> ^ ^ </button>
-<style>
-  #top-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-  }
-</style>
+    <button id="top-button" class="btn btn-primary d-none" onclick="topFunction()" title="Go to top"> ^ ^</button>
+    <style>
+        #top-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
 
-<script>
-  window.onscroll = function() {scrollFunction()};
+    <script>
+        window.onscroll = function () {
+            scrollFunction()
+        };
 
-  function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      document.getElementById("top-button").classList.remove("d-none");
-    } else {
-      document.getElementById("top-button").classList.add("d-none");
-    }
-  }
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("top-button").classList.remove("d-none");
+            } else {
+                document.getElementById("top-button").classList.add("d-none");
+            }
+        }
 
-  function topFunction() {
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-  }
-</script>
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
 {% endblock %}
 
 </body>
