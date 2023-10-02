@@ -2,48 +2,51 @@
 {% load static %}
 
 {% block title %}
-Dashboard
+    Dashboard
 {% endblock title %}
 
 {% block content %}
 
-{% if messages %}
+    {% if messages %}
 
-<div class="bg-danger text-white">
-    <div class = "container">
-            {% for message in messages %}
-        <h5>{{ message }}</h5>
-            {% endfor %}
+        <div class="bg-danger text-white">
+            <div class="container">
+                {% for message in messages %}
+                    <h5>{{ message }}</h5>
+                {% endfor %}
 
-    </div>
-</div>
-{% endif %}
-
-
-<div class="container">
-   <a href="{% url 'create'  %}" class="btn btn-primary mb-3">Dodaj drinka</a>
-<div>
-    <div class="row">
-        {% for drink in drinksUser %}
-        <div class="col-md-3">
-            <div class="card mb-3" style="width: 18rem;">
-                <img src="{{ drink.thumbnail.url }}" alt="{{ drink.name }} Thumbnail" class="card-img-top">
-                <div class="card-body">
-                    <h4 class="card-title">{{ drink.name }}</h4>
-                    <p class="card-text">{{ drink.description }}</p>
-                    <ul>
-                        {% for ingredient in drink.ingredients.all %}
-                            <li>{{ ingredient.product.name }} | {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
-                        {% endfor %}
-                    </ul>
-                    <a href="{% url 'delete_drink' postId=drink.id %}" class="btn btn-danger float-end">Usuń</a>
-
-
-                </div>
             </div>
         </div>
-        {% endfor %}
+    {% endif %}
+
+
+    <div class="container">
+        <a href="{% url 'create' %}" class="btn btn-primary mb-3">Dodaj drinka</a>
+        <div>
+            <div class="row">
+                {% for drink in drinksUser %}
+                    <div class="col-md-3">
+                        <div class="card mb-3" style="width: 18rem;">
+                            <div class="card-body">
+                                <a href="{% url 'detail_cocktail' drink.id %}" class="card-link" style="text-decoration: none;">
+                                    <img src="{{ drink.thumbnail.url }}" alt="{{ drink.name }} Thumbnail"
+                                         class="card-img-top">
+                                    <h4 class="card-title text-center">{{ drink.name }}</h4>
+                                </a>
+                                <p class="card-text">{{ drink.description|linebreaks }}</p>
+                                <ul>
+                                    {% for ingredient in drink.ingredients.all %}
+                                        <li>{{ ingredient.product.name }}
+                                            | {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <a href="{% url 'delete_drink' postId=drink.id %}"
+                                   class="btn btn-danger float-end">Usuń</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-</div>
-</div>
 {% endblock content %}

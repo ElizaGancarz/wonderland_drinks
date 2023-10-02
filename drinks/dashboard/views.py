@@ -14,8 +14,7 @@ from django.contrib import messages
 @login_required()
 def dashboard(request):
     drinksUser = Drink.objects.filter(owner=request.user)
-    ingredients = Ingredient.objects.all()
-    return render(request, 'dashboard.html', {'drinksUser': drinksUser, 'ingredients': ingredients})
+    return render(request, 'dashboard.html', {'drinksUser': drinksUser})
 
 
 @login_required()
