@@ -30,7 +30,7 @@
         {% endfor %}
     </div>
     <div class="mx-auto" style="width: 400px;">
-        {% if drinks_user.paginator.num_pages > 1 %}
+        {% if drinks.paginator.num_pages > 1 %}
             <nav aria-label="Search results pages">
                 <ul class="pagination">
                     {% if drinks.has_previous %}
