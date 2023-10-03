@@ -27,52 +27,57 @@
     {% endblock app_content %}
 
     <section class="parallax"></section>
-
-    <h3>Ostatnio dodane koktajle:</h3>
-    {% if last_cocktails1 %}
+    <section>
         <div class="container text-center">
-            <div class="row align-items-start">
-                {% for cocktail in last_cocktails1 %}
-                    <div class="col">
-                        <div class="card-testimonial">
-                            <article>
-                                <a href="{% url 'detail_cocktail' cocktail.id %}">
-                                    <picture>
-                                        <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                                        <img src="{{ cocktail.image.url }}" alt="Drink Image">
-                                    </picture>
-                                    <h4>{{ cocktail.name }}</h4>
-                                </a>
-                                <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
-                            </article>
-                        </div>
+            <h3>Ostatnio dodane koktajle:</h3>
+            {% if last_cocktails1 %}
+                <div class="container text-center">
+                    <div class="row align-items-start">
+                        {% for cocktail in last_cocktails1 %}
+                            <div class="col">
+                                <div class="card-testimonial">
+                                    <article>
+                                        <a href="{% url 'detail_cocktail' cocktail.id %}"
+                                           class="text-decoration-none text-dark">
+                                            <picture>
+                                                <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
+                                                <img src="{{ cocktail.image.url }}" alt="Drink Image">
+                                            </picture>
+                                            <h4>{{ cocktail.name }}</h4>
+                                        </a>
+                                        <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
+                                    </article>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-    {% if last_cocktails2 %}
-        <div class="container text-center">
-            <div class="row align-items-center">
-                {% for cocktail in last_cocktails2 %}
-                    <div class="col">
-                        <div class="card-testimonial">
-                            <article>
-                                <a href="{% url 'detail_cocktail' cocktail.id %}">
-                                    <picture>
-                                        <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                                        <img src="{{ cocktail.image.url }}" alt="Drink Image">
-                                    </picture>
-                                    <h4>{{ cocktail.name }}</h4>
-                                </a>
-                                <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
-                            </article>
-                        </div>
+                </div>
+            {% endif %}
+            {% if last_cocktails2 %}
+                <div class="container text-center">
+                    <div class="row align-items-center">
+                        {% for cocktail in last_cocktails2 %}
+                            <div class="col">
+                                <div class="card-testimonial">
+                                    <article>
+                                        <a href="{% url 'detail_cocktail' cocktail.id %}"
+                                           class="text-decoration-none text-dark">
+                                            <picture>
+                                                <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
+                                                <img src="{{ cocktail.image.url }}" alt="Drink Image">
+                                            </picture>
+                                            <h4>{{ cocktail.name }}</h4>
+                                        </a>
+                                        <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
+                                    </article>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </section>
     {% if display_barmans %}
         <section class="parallax"></section>
         <section>
@@ -84,8 +89,8 @@
                             <img src="{% static 'images/piotr.jpg' %}" class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">Piotr</h5>
-                                <p class="card-text">This is a longer card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">Poznaj Piotra, mistrza za barem. Dzięki zręcznym dłoniom Piotr
+                                    zamienia zwykłą czynność mieszania drinków w formę sztuki.</p>
                             </div>
                         </div>
                     </div>
@@ -94,8 +99,9 @@
                             <img src="{% static 'images/kamila.png' %}" class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">Kamila</h5>
-                                <p class="card-text">This is a longer card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">Poznaj Kamilę, czarodziejkę sceny barowej. Za barem jest mistrzynią
+                                    opowiadania historii, splatającą narracje z każdym starannie przygotowanym
+                                    koktajlem.</p>
                             </div>
                         </div>
                     </div>

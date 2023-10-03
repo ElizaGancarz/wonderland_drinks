@@ -15,7 +15,7 @@
                     {% for cocktail in pined_home %}
                         <div class="card-testimonial">
                             <article>
-                                <a href="{% url 'detail_cocktail' cocktail.id %}">
+                                <a href="{% url 'detail_cocktail' cocktail.id %}" style="text-decoration:none">
                                     <picture>
                                         <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
                                         <img src="{{ cocktail.image.url }}" alt="{{ cocktail.name }}">
