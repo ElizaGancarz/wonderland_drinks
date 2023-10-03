@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block content %}
+{% block content_header %}
 
     <header>
         <div class="container text-center">
@@ -21,6 +21,10 @@
     </header>
 
     <section class="parallax"></section>
+
+{% endblock content_header %}
+
+{% block content %}
 
     {% block app_content %}
 
