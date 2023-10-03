@@ -1,10 +1,10 @@
 {% load static %}
 
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Drinks {% endblock title %}</title>
+    <title>{% block title %}Drinki{% endblock title %}</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
 
@@ -30,19 +30,19 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="nav nav-pills">
                 {% if not user.is_authenticated %}
-                    {% if request.path != '/login/' %}
+                    {% if request.resolver_match.url_name != 'login_user' %}
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{% url 'login_user' %}">Zaloguj</a>
                         </li>
                     {% endif %}
-                    {% if request.path != '/register/' %}
+                    {% if request.resolver_match.url_name != 'register' %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'register' %}">Rejestracja</a>
                         </li>
                     {% endif %}
                 {% endif %}
                 {% if user.is_authenticated %}
-                    {% if request.path != '/dashboard/' %}
+                    {% if request.resolver_match.url_name != 'dashboard' %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'dashboard' %}">Panel klienta</a>
                         </li>
