@@ -1,69 +1,38 @@
-{% extends 'base.html' %}
+{% extends 'cocktail_base.html' %}
 {% load static %}
 
+
 {% block title %}
-Home
+    Strona główna
 {% endblock title %}
 
-{% block search %}
-       <p class="mt-2">Skorzystaj z naszej wyszukiwarki! Wpisz swój ulubiony alkohol.</p>
-       <form class="pb-4 pt-4" action="{% url 'search' %}" method="GET">
-            <div class="input-group rounded m-auto" style="width: 75%;">
-                <input type="search" class="form-control rounded" name="q" placeholder="Wyszukaj" aria-label="Search" aria-describedby="search-addon" />
-                <button class="btn btn-primary" type="submit">Wyszukaj</button>
-            </div>
-       </form>
-{% endblock search %}
 
-{% block contenthome %}
-<h3>Ostatnio dodane koktajle</h3>
-{% if last_cocktails1 %}
-    <div class="container text-center">
-      <div class="row align-items-start">
-        {% for cocktail in last_cocktails1 %}
-            <div class="col">
-                <div class="card-testimonial" >
-                    <article>
-                        <a href="{% url 'detail_cocktail' cocktail.id %}">
-                            <picture>
-                                <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                                <img src="{{ cocktail.image.url }}" alt="Drink Image">
-                            </picture>
-                            <h4>{{ cocktail.name }}</h4>
-                        </a>
-                        <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
-                    </article>
+{% block app_content %}
+    {% if pined_home %}
+        <section class="container mb-5">
+            <div class="marquee-wrapper" style="user-select: none;">
+                <div class="marquee-content scrollingX">
+                    {% for cocktail in pined_home %}
+                        <div class="card-testimonial">
+                            <article>
+                                <a href="{% url 'detail_cocktail' cocktail.id %}">
+                                    <picture>
+                                        <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
+                                        <img src="{{ cocktail.image.url }}" alt="{{ cocktail.name }}">
+                                    </picture>
+                                    <h4>{{ cocktail.name }}</h4>
+                                </a>
+
+                                <article class="short-description">
+                                    <p>{{ cocktail.description }}</p>
+                                </article>
+                            </article>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-        {% endfor %}
-      </div>
-    </div>
-{% endif %}
-{% if last_cocktails2 %}
-    <div class="container text-center">
-      <div class="row align-items-center">
-        {% for cocktail in last_cocktails2 %}
-        <div class="col">
-            <div class="card-testimonial">
-                <article>
-                    <a href="{% url 'detail_cocktail' cocktail.id %}">
-                        <picture>
-                            <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                            <img src="{{ cocktail.image.url }}" alt="Drink Image">
-                        </picture>
-                        <h4>{{ cocktail.name }}</h4>
-                    </a>
-                    <p style="font-size: small">Dodano: {{ cocktail.creation_date }}</p>
-                </article>
-            </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-{% endif %}
 
-{% endblock contenthome %}
+        </section>
+    {% endif %}
 
-{% block top_button %}
-{{ block.super }}
-{% endblock %}
+{% endblock app_content %}

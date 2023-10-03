@@ -1,23 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'cocktail_base.html' %}
 {% load static %}
 
 {% block title %}
-Cocktail details
+    {{ drink.name }}
 {% endblock title %}
 
-
-{% block search %}
-       <p class="mt-2">Skorzystaj z naszej wyszukiwarki! Wpisz swój ulubiony alkohol.</p>
-       <form class="pb-4 pt-4" action="{% url 'search' %}" method="GET">
-            <div class="input-group rounded m-auto" style="width: 75%;">
-                <input type="search" class="form-control rounded" name="q" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                <button class="btn btn-primary" type="submit">Search </button>
-            </div>
-       </form>
-{% endblock search %}
-
-{% block content %}
-<div class="container" style="display: flex">
+{% block app_content %}
+    <div class="container" style="display: flex">
         <div class="left" style="flex: 50%">
             <img src="{{ drink.image.url }}" alt="{{ drink.name }}">
         </div>
@@ -37,48 +26,18 @@ Cocktail details
                     {% if is_user_liked %}
                         <form action="{% url 'unlike_drink' drink.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit">Unlike</button>
+                            <button type="submit">Odlajkuj</button>
                         </form>
                     {% else %}
                         <form action="{% url 'like_drink' drink.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit">Like</button>
+                            <button type="submit">Polub</button>
                         </form>
                     {% endif %}
                 {% else %}
-                    <p>Please <a href="{% url 'login_user' %}">login</a> to like this drink.</p>
+                    <p><a href="{% url 'login_user' %}">Zaloguj się</a> aby polubić drinka.</p>
                 {% endif %}
             </div>
         </div>
     </div>
-
-{% if last_cocktails %}
-<h3>Sprawdź ostatnio dodane koktajle</h3>
-    <div class="container text-center">
-      <div class="row align-items-start">
-        {% for cocktail in last_cocktails %}
-            <div class="col">
-                <div class="card-testimonial">
-                    <article>
-                        <a href="{% url 'detail_cocktail' cocktail.id %}">
-                            <picture>
-                                    <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
-                                    <img src="{{ cocktail.image.url }}" alt="{{ cocktail.name }}">
-                            </picture>
-                            <h4>{{ cocktail.name }}</h4>
-                        </a>
-                        <article class="short-description">
-                            <p style="font-size: small">Dodano: {{ drink.creation_date }}</p>
-                        </article>
-                    </article>
-                </div>
-            </div>
-        {% endfor %}
-      </div>
-    </div>
-{% endif %}
-{% endblock content %}
-
-{% block top_button %}
-{{ block.super }}
-{% endblock %}
+{% endblock app_content %}

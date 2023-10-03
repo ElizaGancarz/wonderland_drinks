@@ -21,6 +21,7 @@ class RegisterForm(UserCreationForm):
         label='Potwierdź hasło',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
+
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
@@ -40,15 +41,14 @@ class LoginForm(AuthenticationForm):
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        label="Stare hasło",
+        label='Stare hasło',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
     new_password1 = forms.CharField(
-        label="Nowe hasło",
+        label='Nowe hasło',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
     new_password2 = forms.CharField(
-        label="Powtórz nowe hasło",
+        label='Powtórz nowe hasło',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
-

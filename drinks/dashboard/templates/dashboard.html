@@ -1,25 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base.html' %}
 {% load static %}
 
 {% block title %}
-    Dashboard
+    Panel klienta
 {% endblock title %}
 
-{% block content %}
-
-    {% if messages %}
-
-        <div class="bg-danger text-white">
-            <div class="container">
-                {% for message in messages %}
-                    <h5>{{ message }}</h5>
-                {% endfor %}
-
-            </div>
-        </div>
-    {% endif %}
-
-
+{% block app_content %}
     <div class="container">
         <a href="{% url 'create' %}" class="btn btn-primary mb-3">Dodaj drinka</a>
         <div>
@@ -81,4 +67,4 @@
             </div>
         </div>
     </div>
-{% endblock content %}
+{% endblock app_content %}
