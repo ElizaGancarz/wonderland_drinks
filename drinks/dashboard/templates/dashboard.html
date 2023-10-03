@@ -27,8 +27,10 @@
                                             | {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
                                     {% endfor %}
                                 </ul>
-                                <a href="{% url 'delete_drink' postId=drink.id %}"
-                                   class="btn btn-danger float-end">Usuń</a>
+                                <form action="{% url 'delete_drink' drink_id=drink.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="submit" class="btn btn-danger float-end" value="Usuń">
+                                </form>
                             </div>
                         </div>
                     </div>

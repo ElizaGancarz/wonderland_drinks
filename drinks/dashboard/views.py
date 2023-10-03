@@ -1,21 +1,18 @@
 import os
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from cocktails.models import Drink, Ingredient
-from django.http import HttpResponseNotAllowed
-from .forms import DrinkForm, IngredientFormset
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
-from django.http import Http404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponseNotAllowed
+from django.shortcuts import render, redirect, get_object_or_404
 
+from cocktails.models import Drink
+from .forms import DrinkForm, IngredientFormset
 
 
 @login_required()
 def dashboard(request):
     drinks_user = Drink.objects.filter(owner=request.user).order_by('name')
-
 
     paginator = Paginator(drinks_user, 4)
     page_number = request.GET.get('page')
@@ -40,8 +37,6 @@ def create(request):
         ingredients_formset = IngredientFormset(data=request.POST)
         if drink_form.is_valid():
             drink = drink_form.save(commit=False)
-            if 'image' in request.FILES:
-                drink.image = request.FILES['image']
             drink.owner = request.user
             ingredients_formset = IngredientFormset(data=request.POST, instance=drink)
             if ingredients_formset.is_valid():
@@ -54,18 +49,15 @@ def create(request):
 
 
 @login_required()
-def delete_drink(request, postId):
-    try:
-        drink = Drink.objects.get(pk=postId)
-        os.remove(drink.image.path)
-        os.remove(drink.thumbnail.path)
-
+def delete_drink(request, drink_id):
+    if request.method == 'POST':
+        drink = get_object_or_404(Drink, pk=drink_id, owner=request.user)
+        if os.path.isfile(drink.image.path):
+            os.remove(drink.image.path)
+        if os.path.isfile(drink.thumbnail.path):
+            os.remove(drink.thumbnail.path)
         drink.delete()
-
         messages.success(request, 'Drink został usunięty z twojej listy')
-
         return redirect('dashboard')
-
-    except Drink.DoesNotExist:
-        raise Http404("Wpis nie istnieje")
-
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['POST'])
