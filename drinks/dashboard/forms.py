@@ -1,8 +1,10 @@
 from django import forms
-from cocktails.models import Drink, Ingredient
+from django.forms import inlineformset_factory
+
+from cocktails.models import Drink, Ingredient, Product, UnitType
 
 
-class AddDrink(forms.ModelForm):
+class DrinkForm(forms.ModelForm):
     name = forms.CharField(
         label='Nazwa drinka',
         max_length=100,
@@ -13,32 +15,54 @@ class AddDrink(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 
-
-    # ingredients_query = Ingredient.objects.all()
-    # INGREDIENT_CHOICES = [(ingredient.name, ingredient.name) for ingredient in ingredients_query]
-    #
-    # ingredients = forms.MultipleChoiceField(
-    #     label='Wybierz składniki',
-    #     choices=INGREDIENT_CHOICES,
-    #     widget=forms.CheckboxSelectMultiple(attrs={'class': 'custom-checkbox-class'}),
-    # )
-
-
     image = forms.ImageField(
         label='Dodaj zdjęcie',
         widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
 
     )
 
-    drink_publish = forms.BooleanField(
-        label='Drink publiczny',
-        required=False,  # Jeśli pole ma być opcjonalne
+    public = forms.BooleanField(
+        label='Opublikuj',
+        required=False,
         widget=forms.CheckboxInput(attrs={'class': 'custom-checkbox-class'}),
     )
+
     class Meta:
         model = Drink
-        fields = ['name', 'description', 'image', 'drink_publish']
+        fields = ['name', 'description', 'image', 'public']
 
 
+class IngredientForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        label='Produkt',
+    )
+    amount = forms.IntegerField(
+        initial=1,
+        min_value=1,
+        max_value=10000,
+        step_size=1,
+        label='Ilość',
+    )
+    unit = forms.ModelChoiceField(
+        queryset=UnitType.objects.all(),
+        label='Jednostka',
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ['product', 'amount', 'unit']
 
 
+IngredientFormset = inlineformset_factory(
+        Drink,
+        Ingredient,
+        fields=['product', 'amount', 'unit'],
+        absolute_max=30,
+        max_num=30,
+        min_num=1,
+        form=IngredientForm,
+        extra=0,
+        can_delete=False,
+        can_delete_extra=False,
+    )

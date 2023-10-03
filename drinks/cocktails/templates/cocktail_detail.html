@@ -23,13 +23,13 @@ Cocktail details
         </div>
         <div class="right" style="flex: 50%">
             <h1>{{ drink.name }}</h1>
-            <p>{{ drink.description }}</p>
             <p> Składniki: </p>
             <ul>
                 {% for ingredient in drink.ingredients.all %}
-                    <li>{{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}</li>
+                    <li>{{ ingredient.product.name }} - {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
                 {% endfor %}
             </ul>
+            <p>{{ drink.description|linebreaks }}</p>
             <p style="font-size: small">Dodano: {{ drink.creation_date }}</p>
             <div>
                 <p>Likes: {{ drink.likes }}</p>

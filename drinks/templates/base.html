@@ -106,23 +106,6 @@
 
 <section class="parallax"></section>
 
-<section class="section-content">
-    <div class="container text-center">
-        <div class="mt-5">
-            <h3>Zapisz się do naszego newslettera!</h3>
-            <form class="pb-4 pt-4">
-                <div class="input-group rounded m-auto" style="width: 45%;">
-                    <input type="email" class="form-control rounded"  placeholder="E-mail" aria-label="Search" aria-describedby="search-addon" />
-                    <button class="btn btn-primary" type="submit">Zapisuje się </button>
-                </div>
-        </form>
-       </div>
-    </div>
-
-</section>
-
-<section class="parallax"></section>
-
 <section>
     <div class="container text-center">
         <h2>Nasz zespół doświadczonych barmanów!</h2>
@@ -203,34 +186,4 @@
 </body>
 </html>
 
-
-<script>
-    var counter = 1;
-
-    function cloneSelect() {
-        // Klonuj pole wyboru
-        var originalSelect = document.querySelector("#ingredients-container select");
-        var clonedSelect = originalSelect.cloneNode(true);
-
-        // Zwiększ licznik
-        counter++;
-
-        // Zmień nazwę sklonowanego pola
-        clonedSelect.name = "ingredient_" + counter;
-
-        // Usuń wartość wybraną w sklonowanym polu
-        clonedSelect.selectedIndex = -1;
-
-        // Dodaj sklonowane pole do kontenera
-        document.querySelector("#ingredients-container").appendChild(clonedSelect);
-
-        // Dodawanie nowego składnika
-
-        // Skorzystaj z aktualnego numeru sklonowanego pola
-        const select = document.querySelector('select[name="ingredient_' + counter + '"]');
-        const newIngredientInput = document.querySelector('input[name="new_ingredient"]');
-
-
-    }
-</script>
 
