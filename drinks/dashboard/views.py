@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from cocktails.models import Drink, Ingredient
 from django.http import HttpResponseNotAllowed
 from .forms import DrinkForm, IngredientFormset
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from django.http import Http404
 from django.contrib import messages
@@ -13,8 +14,20 @@ from django.contrib import messages
 
 @login_required()
 def dashboard(request):
-    drinksUser = Drink.objects.filter(owner=request.user)
-    return render(request, 'dashboard.html', {'drinksUser': drinksUser})
+    drinks_user = Drink.objects.filter(owner=request.user).order_by('name')
+
+
+    paginator = Paginator(drinks_user, 4)
+    page_number = request.GET.get('page')
+
+    try:
+        drinks_user = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        drinks_user = paginator.page(1)
+    except EmptyPage:
+        drinks_user = paginator.page(paginator.num_pages)
+
+    return render(request, 'dashboard.html', {'drinks_user': drinks_user})
 
 
 @login_required()
