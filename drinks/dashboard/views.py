@@ -13,29 +13,31 @@ from .forms import DrinkForm, IngredientFormset
 
 @login_required()
 def dashboard(request):
-    drinks_user = Drink.objects.filter(
-        Q(owner=request.user) |
-        Q(like__user=request.user)
-    ).distinct().order_by('name')
+    if request.method == 'GET':
+        drinks_user = Drink.objects.filter(
+            Q(owner=request.user) |
+            Q(like__user=request.user)
+        ).distinct().order_by('name')
 
-    paginator = Paginator(drinks_user, 4)
-    page_number = request.GET.get('page')
+        paginator = Paginator(drinks_user, 4)
+        page_number = request.GET.get('page')
 
-    try:
-        drinks_user = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        drinks_user = paginator.page(1)
-    except EmptyPage:
-        drinks_user = paginator.page(paginator.num_pages)
+        try:
+            drinks_user = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            drinks_user = paginator.page(1)
+        except EmptyPage:
+            drinks_user = paginator.page(paginator.num_pages)
 
-    return render(request, 'dashboard.html', {'drinks_user': drinks_user})
+        return render(request, 'dashboard.html', {'drinks_user': drinks_user})
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['GET'])
 
 
 @login_required()
 def create(request):
     if request.method == 'GET':
         return render(request, 'create.html', {'drink_form': DrinkForm(), 'ingredient_formset': IngredientFormset()})
-
     elif request.method == 'POST':
         drink_form = DrinkForm(request.POST, request.FILES)
         ingredients_formset = IngredientFormset(data=request.POST)
@@ -46,7 +48,9 @@ def create(request):
             if ingredients_formset.is_valid():
                 drink.save()
                 ingredients_formset.save()
+                messages.success(request, 'Drink został pomyślnie dodany.')
                 return redirect('dashboard')
+        messages.error(request, 'Popraw poniższe błędy:')
         return render(request, 'create.html', {'drink_form': drink_form, 'ingredient_formset': ingredients_formset})
     else:
         return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])

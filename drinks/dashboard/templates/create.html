@@ -31,7 +31,8 @@
                                 <tbody>
                                 {{ ingredient_formset.management_form }}
                                 {% for form in ingredient_formset %}
-                                    <tr class="formset-row">
+                                    <tr class="formset-row"{% if form.errors %}
+                                        style="background-color: red" {% endif %}>
                                         <td>{{ form.product }}</td>
                                         <td>{{ form.amount }}</td>
                                         <td>{{ form.unit }}</td>
