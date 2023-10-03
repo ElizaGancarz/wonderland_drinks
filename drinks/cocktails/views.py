@@ -8,10 +8,10 @@ from django.db.models import Q
 
 
 def home(request):
-    last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')[:6]
+    last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')[:6]
     first_half = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
     second_half = last_added_cocktails[3:] if len(last_added_cocktails[3:]) >= 2 else None
-    pined_home = Drink.objects.filter(pin_to_main_page=True, drink_publish=True)
+    pined_home = Drink.objects.filter(pin_to_main_page=True, public=True)
     pined_home = pined_home if len(pined_home) > 1 else None
 
     return render(request, 'home.html',
@@ -27,7 +27,7 @@ def search(request):
             Q(ingredient__product__name__icontains=query)
         ).distinct()
         total_count = drinks.count()
-        last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
+        last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')
         last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
 
         paginator = Paginator(drinks, 8)
@@ -49,7 +49,7 @@ def search(request):
 
 def detail_cocktail(request, drink_id):
     drink = get_object_or_404(Drink, id=drink_id)
-    last_added_cocktails = Drink.objects.filter(drink_publish=True).order_by('-creation_date')
+    last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')
     last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails) >= 2 else None
 
     is_user_liked = False

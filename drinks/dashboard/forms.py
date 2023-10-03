@@ -12,6 +12,7 @@ class DrinkForm(forms.ModelForm):
     )
     description = forms.CharField(
         label='Krótki opis',
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
     )
 

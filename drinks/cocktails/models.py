@@ -37,7 +37,7 @@ class Drink(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='images/', blank=True)
     thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
-    drink_publish = models.BooleanField(default=True)
+    public = models.BooleanField(default=True)
     pin_to_main_page = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
 
