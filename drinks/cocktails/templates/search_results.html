@@ -2,22 +2,43 @@
 {% load static %}
 
 {% block title %}
-Search results
+Wyniki wyszukiwania
 {% endblock title %}
 
 {% block search %}
-       <p class="mt-2">Skorzystaj z naszej wyszukiwarki! Wpisz swój ulubiony alkohol.</p>
+       <p class="mt-2">Skorzystaj z naszej wyszukiwarki!</p>
        <form class="pb-4 pt-4" action="{% url 'search' %}" method="GET">
             <div class="input-group rounded m-auto" style="width: 75%;">
-                <input type="search" class="form-control rounded" name="q" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                <button class="btn btn-primary" type="submit">Search </button>
+                <input type="search" class="form-control rounded" name="q" placeholder="Wyszukaj" aria-label="Search" aria-describedby="search-addon" />
+                <button class="btn btn-primary" type="submit">Wyszukaj</button>
             </div>
        </form>
 {% endblock search %}
 
 {% block content %}
-<h2 style="margin: 50px;">Search Results: {{ total_count }}</h2>
-<div class="mx-auto" style="width: 200px;">
+<h2 style="margin: 50px;">Wyniki wyszukiwania: {{ total_count }}</h2>
+    <div class="row row-cols-4" style="margin: 20px;">
+    {% for drink in drinks %}
+        <div class="card">
+            <a href="{% url 'detail_cocktail' drink.id %}" class="text-decoration-none text-dark">
+                <img src="{{ drink.image.url }}" class="card-img-top" alt="{{ drink.name }}">
+                <div class="card-body" style="margin: 10px;">
+                    <h5 class="card-title">{{ drink.name }}</h5>
+                    {% for ingredient in drink.ingredients.all %}
+                    <li>{{ ingredient.product.name }} - {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
+                {% endfor %}
+                </div>
+            </a>
+            <div class="card-footer" style="margin: 10px;">
+                <small class="text-body-secondary">Dodano {{ drink.creation_date }}</small>
+            </div>
+
+        </div>
+    {% empty %}
+    <p>Nie znaleziono drinków.</p>
+    {% endfor %}
+</div>
+<div class="mx-auto" style="width: 400px;">
     <nav aria-label="Search results pages">
         <ul class="pagination">
             {% if drinks.has_previous %}
@@ -25,7 +46,7 @@ Search results
                 <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.previous_page_number }}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Previous</span>
+                    <span class="sr-only">Poprzednia</span>
                 </a>
             </li>
             <li class="page-item"><a class="page-link"
@@ -42,7 +63,7 @@ Search results
             <li class="page-item">
                 <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.next_page_number }}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Next</span>
+                    <span class="sr-only">Następna</span>
                 </a>
             </li>
             {% endif %}
@@ -50,29 +71,10 @@ Search results
     </nav>
 </div>
 
-<div class="row row-cols-4" style="margin: 20px;">
-    {% for drink in drinks %}
-        <div class="card">
-            <a href="{% url 'detail_cocktail' drink.id %}">
-                <img src="{{ drink.image.url }}" class="card-img-top" alt="{{ drink.name }}">
-                <div class="card-body" style="margin: 10px;">
-                    <h5 class="card-title">{{ drink.name }}</h5>
-                </div>
-            </a>
-            <div class="card-footer" style="margin: 10px;">
-                <small class="text-body-secondary">Dodano {{ drink.creation_date }}</small>
-            </div>
-
-        </div>
-    {% empty %}
-    <p>No drinks found.</p>
-    {% endfor %}
-</div>
-
 <section class="parallax"></section>
 
 <div class="mx-auto" style="width: 600px;">
-    <h3>Sprawdź ostatnio dodane koktajle</h3>
+    <h3>Sprawdź ostatnio dodane koktajle: </h3>
 </div>
     {% if last_cocktails %}
     <div class="container text-center">
@@ -81,7 +83,7 @@ Search results
             <div class="col">
                 <div class="card-testimonial">
                     <article>
-                        <a href="{% url 'detail_cocktail' cocktail.id %}">
+                        <a href="{% url 'detail_cocktail' cocktail.id %}" class="text-decoration-none">
                             <picture>
                                 <source media="(min-width: 768px)" srcset="{{ cocktail.image.url }}">
                                 <img src="{{ cocktail.image.url }}" alt="Drink Image">
