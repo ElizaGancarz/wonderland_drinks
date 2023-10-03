@@ -1,21 +1,29 @@
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Drink, Like, Ingredient
-from django.utils import timezone
+
+from django.contrib import messages
+from .models import Drink, Like
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
-
-def home(request):
+def get_last_addedd_cocktails():
     last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')[:6]
     first_half = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
     second_half = last_added_cocktails[3:] if len(last_added_cocktails[3:]) >= 2 else None
-    pined_home = Drink.objects.filter(pin_to_main_page=True, public=True)
-    pined_home = pined_home if len(pined_home) > 1 else None
+    return first_half, second_half
 
-    return render(request, 'home.html',
-                  {'last_cocktails1': first_half, 'last_cocktails2': second_half, 'pined_home': pined_home, 'display_barmans':True})
+def home(request):
+    if request.method == 'GET':
+        last_cocktails1, last_cocktails2 = get_last_addedd_cocktails()
+        pined_home = Drink.objects.filter(pin_to_main_page=True, public=True)
+        pined_home = pined_home if len(pined_home) > 3 else None
+
+        return render(request, 'home.html',
+                  {'last_cocktails1': last_cocktails1, 'last_cocktails2': last_cocktails2, 'pined_home': pined_home, 'display_barmans':True})
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['GET'])
 
 
 def search(request):
@@ -27,8 +35,7 @@ def search(request):
             Q(ingredient__product__name__icontains=query)
         ).distinct()
         total_count = drinks.count()
-        last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')
-        last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails[:3]) >= 2 else None
+        last_added_cocktails, _ = get_last_addedd_cocktails()
 
         paginator = Paginator(drinks, 8)
         page_number = request.GET.get('page')
@@ -48,47 +55,54 @@ def search(request):
 
 
 def detail_cocktail(request, drink_id):
-    drink = get_object_or_404(Drink, id=drink_id)
-    last_added_cocktails = Drink.objects.filter(public=True).order_by('-creation_date')
-    last_added_cocktails = last_added_cocktails[:3] if len(last_added_cocktails) >= 2 else None
+    if request.method == 'GET':
+        drink = get_object_or_404(Drink, id=drink_id)
+        last_added_cocktails, _ = get_last_addedd_cocktails()
 
-    is_user_liked = False
-    if request.user.is_authenticated:
-        likes = drink.like_set.filter(user=request.user)
-        if likes.exists():
-            is_user_liked = True
+        is_user_liked = False
+        if request.user.is_authenticated:
+            likes = drink.like_set.filter(user=request.user)
+            if likes.exists():
+                is_user_liked = True
 
-    context = {'drink': drink,
-               'last_cocktails1': last_added_cocktails,
-               'is_user_liked': is_user_liked,
-               }
+        context = {'drink': drink,
+                   'last_cocktails1': last_added_cocktails,
+                   'is_user_liked': is_user_liked,
+                   }
 
-    return render(request, 'cocktail_detail.html', context)
+        return render(request, 'cocktail_detail.html', context)
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['GET'])
 
 
 @login_required
 def like_drink(request, drink_id):
-    drink = get_object_or_404(Drink, pk=drink_id)
+    if request.method == 'POST':
+        drink = get_object_or_404(Drink, pk=drink_id)
+        like = Like.objects.filter(user=request.user, drink=drink).first()
 
-    like = Like.objects.filter(user=request.user, drink=drink).first()
-
-    if not like:
-        Like.objects.create(user=request.user, drink=drink)
-        drink.likes += 1
-        drink.save()
-
-    return redirect('detail_cocktail', drink_id)
+        if not like:
+            Like.objects.create(user=request.user, drink=drink)
+            drink.likes += 1
+            drink.save()
+        messages.success(request, 'Drink polubiony!')
+        return redirect('detail_cocktail', drink_id)
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['POST'])
 
 
 @login_required
 def unlike_drink(request, drink_id):
-    drink = get_object_or_404(Drink, pk=drink_id)
+    if request.method == 'POST':
+        drink = get_object_or_404(Drink, pk=drink_id)
+        like = Like.objects.filter(user=request.user, drink=drink).first()
 
-    like = Like.objects.filter(user=request.user, drink=drink).first()
+        if like:
+            like.delete()
+            drink.likes -= 1
+            drink.save()
 
-    if like:
-        like.delete()
-        drink.likes -= 1
-        drink.save()
-
-    return redirect('detail_cocktail', drink_id)
+        messages.success(request, 'Drink odlajkowany.')
+        return redirect('detail_cocktail', drink_id)
+    else:
+        return HttpResponseNotAllowed(permitted_methods=['POST'])
