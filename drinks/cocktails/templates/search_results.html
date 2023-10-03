@@ -30,38 +30,40 @@
         {% endfor %}
     </div>
     <div class="mx-auto" style="width: 400px;">
-        <nav aria-label="Search results pages">
-            <ul class="pagination">
-                {% if drinks.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.previous_page_number }}"
-                           aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Poprzednia</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link"
-                                             href="?q={{ query|urlencode }}&page={{ drinks.previous_page_number }}">
-                        {{ drinks.previous_page_number }}</a></li>
-                {% endif %}
+        {% if drinks_user.paginator.num_pages > 1 %}
+            <nav aria-label="Search results pages">
+                <ul class="pagination">
+                    {% if drinks.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.previous_page_number }}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Poprzednia</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="?q={{ query|urlencode }}&page={{ drinks.previous_page_number }}">
+                            {{ drinks.previous_page_number }}</a></li>
+                    {% endif %}
 
-                <li class="page-item"><a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.number }}">
-                    {{ drinks.number }}</a></li>
+                    <li class="page-item"><a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.number }}">
+                        {{ drinks.number }}</a></li>
 
-                {% if drinks.has_next %}
-                    <li class="page-item"><a class="page-link"
-                                             href="?q={{ query|urlencode }}&page={{ drinks.next_page_number }}">
-                        {{ drinks.next_page_number }}</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.next_page_number }}"
-                           aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Następna</span>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+                    {% if drinks.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?q={{ query|urlencode }}&page={{ drinks.next_page_number }}">
+                            {{ drinks.next_page_number }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="?q={{ query|urlencode }}&page={{ drinks.next_page_number }}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Następna</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 {% endblock app_content %}
 

@@ -3,6 +3,7 @@ import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -12,7 +13,10 @@ from .forms import DrinkForm, IngredientFormset
 
 @login_required()
 def dashboard(request):
-    drinks_user = Drink.objects.filter(owner=request.user).order_by('name')
+    drinks_user = Drink.objects.filter(
+        Q(owner=request.user) |
+        Q(like__user=request.user)
+    ).distinct().order_by('name')
 
     paginator = Paginator(drinks_user, 4)
     page_number = request.GET.get('page')
