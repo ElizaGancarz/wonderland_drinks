@@ -15,18 +15,18 @@ def register(request):
     elif request.method == 'POST':
         form = RegisterForm(request.POST)
         if not form.is_valid():
-            error = 'Popraw poniższe błędy.'
+            messages.error(request, 'Popraw poniższe błędy:')
         elif User.objects.filter(email=form.cleaned_data['email']).exists():
-            error = 'Ten email jest już zajęty. Spróbuj ponownie.'
+            messages.error(request, 'Ten email jest już zajęty. Spróbuj ponownie.')
         else:
             try:
                 user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
                                                 form.cleaned_data['password1'])
                 messages.success(request, 'Użytkownik pomyślnie zarejestrowany.')
-                return redirect("dashboard")
+                return redirect('dashboard')
             except IntegrityError as e:
-                error = e
-        return render(request, 'register.html', {'error': error, 'form': form})
+                messages.error(request, e)
+        return render(request, 'register.html', {'form': form})
     else:
         return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
 
@@ -40,12 +40,12 @@ def login_user(request):
             user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')
+                return redirect('home')
             else:
-                error = 'Błąd autentykacji.'
+                messages.error(request, 'Błąd autentykacji.')
         else:
-            error = "Popraw poniższe błędy."
-        return render(request, 'login_user.html', {'error': error, 'form': form})
+            messages.error(request, 'Popraw poniższe błędy.')
+        return render(request, 'login_user.html', {'form': form})
     else:
         return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
 
@@ -53,23 +53,26 @@ def login_user(request):
 @login_required
 def logout_user(request):
     logout(request)
-    return redirect("home")
+    return redirect('home')
 
 
 @login_required()
 def change_password(request):
-    if request.method == "GET":
+    if request.method == 'GET':
         form = CustomPasswordChangeForm(request.user)
-        return render(request, "change_password.html", {'form': form})
-    elif request.method == "POST":
+        return render(request, 'change_password.html', {'form': form})
+    elif request.method == 'POST':
         form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Hasło zostało pomyślnie zaktualizowane.')
-            return redirect("dashboard")
+            if form.cleaned_data['old_password'] != form.cleaned_data['new_password1']:
+                user = form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Hasło zostało pomyślnie zaktualizowane.')
+                return redirect('home')
+            else:
+                messages.error(request, 'Nowe hasło musi być różne od starego.')
         else:
             messages.error(request, 'Coś poszło nie tak. Popraw poniższe błędy.')
-            return render(request, "change_password.html", {'form': form})
+        return render(request, 'change_password.html', {'form': form})
     else:
         return HttpResponseNotAllowed(permitted_methods=['GET', 'POST'])
