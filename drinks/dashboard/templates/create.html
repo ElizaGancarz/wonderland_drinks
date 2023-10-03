@@ -1,7 +1,11 @@
 {% extends 'dashboard_base.html' %}
 
 {% block title %}
-    Dodaj drinka
+    {% if drink.id %}
+        Edytuj drinka
+    {% else %}
+        Dodaj drinka
+    {% endif %}
 {% endblock title %}
 
 {% block app_content %}
@@ -9,10 +13,16 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">Dodaj swój przepis na drinka:</div>
+                    <div class="card-header">
+                        {% if drink.id %}
+                            Edytuj swój przepis na drinka:
+                        {% else %}
+                            Dodaj swój przepis na drinka:
+                        {% endif %}
+                    </div>
                     <div class="card-body">
                         <template id="ingredient_formset_empty_form">{{ ingredient_formset.empty_form }}</template>
-                        <form action="{% url 'create' %}" id="id_html_form" method="post" autocomplete="off"
+                        <form action="{% if drink.id %}{% url 'edit' drink.id %}{% else %}{% url 'create' %}{% endif %}" id="id_html_form" method="post" autocomplete="off"
                               enctype="multipart/form-data">
                             {% csrf_token %}
                             <div id="drink_form" class="form-group">
@@ -39,6 +49,7 @@
                                         <td>
                                             <button type="button" class="remove-row">Usuń</button>
                                         </td>
+                                        <td style="display: none;">{{ form.id }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -46,7 +57,7 @@
                             <div id="ingredient_formset_add_button"
                                  style="text-decoration: underline; cursor: pointer;">Dodaj składnik
                             </div>
-                            <input id="ingredient_formset_submit_button" type="submit" value="Dodaj">
+                            <input id="ingredient_formset_submit_button" type="submit" value="{% if drink.id %}Zapisz{% else %}Dodaj{% endif %}">
                         </form>
                     </div>
                 </div>

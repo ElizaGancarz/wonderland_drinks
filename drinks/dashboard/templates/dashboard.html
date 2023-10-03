@@ -27,10 +27,23 @@
                                         | {{ ingredient.amount }} {{ ingredient.unit.short_name }}</li>
                                 {% endfor %}
                             </ul>
-                            <form action="{% url 'delete_drink' drink_id=drink.id %}" method="POST">
-                                {% csrf_token %}
-                                <input type="submit" class="btn btn-danger float-end" value="Usuń">
-                            </form>
+                            {% if drink.owner == request.user %}
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <a href="{% url 'edit' drink_id=drink.id %}"
+                                               class="btn btn-primary mb-3">Edytuj</a>
+                                        </div>
+
+                                        <div class="col">
+                                            <form action="{% url 'delete_drink' drink_id=drink.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="submit" class="btn btn-danger float-end" value="Usuń">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
