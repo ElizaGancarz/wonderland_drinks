@@ -16,7 +16,7 @@
                               enctype="multipart/form-data">
                             {% csrf_token %}
                             <div id="drink_form" class="form-group">
-                                {{ drink_form }}
+                                {{ drink_form.as_p }}
                             </div>
 
                             <table id="ingredient_formset_table" class="table">
