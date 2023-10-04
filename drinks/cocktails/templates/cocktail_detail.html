@@ -21,7 +21,7 @@
             <p>{{ drink.description|linebreaks }}</p>
             <p style="font-size: small">Dodano: {{ drink.creation_date }}</p>
             <div>
-                <p>Likes: {{ drink.likes }}</p>
+                <p>Polubienia: {{ drink.likes }}</p>
                 {% if request.user.is_authenticated %}
                     {% if is_user_liked %}
                         <form action="{% url 'unlike_drink' drink.id %}" method="post">

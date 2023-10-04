@@ -62,11 +62,7 @@ def detail_cocktail(request, drink_id):
 
         last_added_cocktails, _ = get_last_addedd_cocktails()
 
-        is_user_liked = False
-        if request.user.is_authenticated:
-            likes = drink.like_set.filter(user=request.user)
-            if likes.exists():
-                is_user_liked = True
+        is_user_liked = request.user.is_authenticated and drink.is_liked_by_user(request.user)
 
         context = {'drink': drink,
                    'last_cocktails1': last_added_cocktails,
@@ -84,11 +80,13 @@ def like_drink(request, drink_id):
         drink = get_object_or_404(Drink, pk=drink_id)
         like = Like.objects.filter(user=request.user, drink=drink).first()
 
-        if not like:
+        if like:
+            messages.warning(request, 'Już polubiłeś ten drink!')
+        else:
             Like.objects.create(user=request.user, drink=drink)
             drink.likes += 1
             drink.save()
-        messages.success(request, 'Drink polubiony!')
+            messages.success(request, 'Drink polubiony!')
         return redirect('detail_cocktail', drink_id)
     else:
         return HttpResponseNotAllowed(permitted_methods=['POST'])
@@ -104,8 +102,7 @@ def unlike_drink(request, drink_id):
             like.delete()
             drink.likes -= 1
             drink.save()
-
-        messages.success(request, 'Drink odlajkowany.')
+            messages.success(request, 'Drink odlajkowany.')
         return redirect('detail_cocktail', drink_id)
     else:
         return HttpResponseNotAllowed(permitted_methods=['POST'])

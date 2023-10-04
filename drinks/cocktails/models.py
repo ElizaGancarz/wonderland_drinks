@@ -39,7 +39,7 @@ class Drink(models.Model):
     thumbnail = models.ImageField(upload_to='thumbnails/', blank=True, null=True)
     public = models.BooleanField(default=True)
     pin_to_main_page = models.BooleanField(default=False)
-    likes = models.PositiveIntegerField(default=0)
+    likes = models.PositiveIntegerField(default=0, editable=False)
 
     def __str__(self):
         return f'{self.name} | {self.creation_date} | {self.description}'
@@ -48,18 +48,17 @@ class Drink(models.Model):
     def ingredients(self):
         return Ingredient.objects.filter(drink=self)
 
-    @property
-    def is_liked_by_user(self):
-        return self.like_set.filter(user=self.owner).exists()
+    def is_liked_by_user(self, user):
+        return self.like_set.filter(user=user).exists()
+
+    def update_like_count(self):
+        self.likes = Like.objects.filter(drink=self).count()
+        self.save()
 
     def save(self, *args, **kwargs):
 
         self.thumbnail = self.create_thumbnail()
         super(Drink, self).save(*args, **kwargs)
-
-    def update_like_count(self):
-        self.likes = Like.objects.filter(drink=self).count()
-        self.save()
 
     def create_thumbnail(self):
         image = Image.open(self.image)
