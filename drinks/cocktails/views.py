@@ -1,4 +1,4 @@
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 
 from django.contrib import messages
@@ -57,6 +57,9 @@ def search(request):
 def detail_cocktail(request, drink_id):
     if request.method == 'GET':
         drink = get_object_or_404(Drink, id=drink_id)
+        if not drink.public and drink.owner != request.user:
+            return HttpResponseForbidden('Ups! Nie masz dostępu do tego drinka.')
+
         last_added_cocktails, _ = get_last_addedd_cocktails()
 
         is_user_liked = False
