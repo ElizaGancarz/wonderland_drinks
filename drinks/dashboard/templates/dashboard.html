@@ -51,31 +51,40 @@
             <div class="mx-auto" style="width: 400px;">
                 {% if drinks_user.paginator.num_pages > 1 %}
                     <ul class="pagination">
-                        {% if drinks_user.has_previous %}
+
+                        {% if drinks_user.number > 2 %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ drinks_user.previous_page_number }}"
-                                   aria-label="Previous">
+                                <a class="page-link" href="?page=1">
                                     <span aria-hidden="true">&laquo;</span>
-                                    <span class="sr-only">Poprzednia</span>
+                                    <span class="sr-only">1</span>
                                 </a>
                             </li>
-                            <li class="page-item"><a class="page-link"
-                                                     href="?page={{ drinks_user.previous_page_number }}">
-                                {{ drinks_user.previous_page_number }}</a></li>
+                        {% endif %}
+
+                        {% if drinks_user.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ drinks_user.previous_page_number }}">
+                                    {{ drinks_user.previous_page_number }}
+                                </a>
+                            </li>
                         {% endif %}
 
                         <li class="page-item"><a class="page-link" href="?page={{ drinks_user.number }}">
                             {{ drinks_user.number }}</a></li>
 
                         {% if drinks_user.has_next %}
-                            <li class="page-item"><a class="page-link"
-                                                     href="?page={{ drinks_user.next_page_number }}">
-                                {{ drinks_user.next_page_number }}</a></li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ drinks_user.next_page_number }}"
-                                   aria-label="Next">
+                                <a class="page-link" href="?page={{ drinks_user.next_page_number }}">
+                                    {{ drinks_user.next_page_number }}
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if drinks_user.next_page_number < drinks_user.paginator.num_pages %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ drinks_user.paginator.num_pages }}">
+                                    <span class="sr-only">{{ drinks_user.paginator.num_pages }}</span>
                                     <span aria-hidden="true">&raquo;</span>
-                                    <span class="sr-only">Następna</span>
                                 </a>
                             </li>
                         {% endif %}
