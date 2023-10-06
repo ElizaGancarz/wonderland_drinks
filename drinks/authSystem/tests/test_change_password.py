@@ -27,7 +27,7 @@ class TestChangePassword(TestCase):
 
     def test_change_password_when_positive_credentials(self):
         response = self.client.post(reverse('change_password'), data=self.valid_form)
-        self.assertRedirects(response, '/dashboard/', status_code=302, target_status_code=200)
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200)
 
     def test_change_password_new_password_too_simple(self):
         password_too_simple_form = dict(self.valid_form)

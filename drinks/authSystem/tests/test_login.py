@@ -16,7 +16,7 @@ class TestLogin(TestCase):
 
     def test_login_when_positive_credentials(self):
         response = self.client.post(reverse('login_user'), data={'username': 'testuser', 'password': '123'})
-        self.assertRedirects(response, '/dashboard/', status_code=302, target_status_code=200)
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200)
 
     def test_login_when_incorrect_password(self):
         response = self.client.post(reverse('login_user'), data={'username': 'testuser', 'password': 'abc'})
