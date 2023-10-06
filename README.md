@@ -21,23 +21,23 @@ and [Bootstrap](https://getbootstrap.com/) for styling.
     - `pip install -r requirements.txt`
 4. Setup .env file:
     - create `.env` file in `drinks` folder based on `env.example`
-5. Setup database - you can use db from repo or create new one:
-    - if you use db from repo you can login to admin panel:
+5. Setup database - you can use demo database from repo or create new one:
+    - if you use demo database from repo you can use already created accounts:
         - superuser: `admin` password: `admin`
+        - user 1: `alicja` password: `alicja123456`
+        - user 2: `bartek` password: `bartek123456`
     - if you want to create your own db:
         - delete `db.sqlite3` file
         - delete contents of `media/images` and `media/thumbnails` folders
-        - go to `drinks` folder
+        - go to `drinks` directory
         - `python manage.py makemigrations`
         - `python manage.py migrate`
         - `python manage.py createsuperuser`
             - pass superuser login and password in terminal
 6. Run server:
-
-- `python manage.py runserver`
-- go to `http://127.0.0.1:8000/`
-
-7. To access admin panel go to `http://127.0.0.1:8000/admin/`
+   - `python manage.py runserver`
+   - go to `http://127.0.0.1:8000/`
+7. To access admin panel go to `http://127.0.0.1:8000/admin/`.
 
 # How to use the project
 
@@ -60,13 +60,29 @@ and [Bootstrap](https://getbootstrap.com/) for styling.
 6. When creating the drink by default the drink is private. Only the owner can see it.
    If you want to share it with others, mark it as public. The drink will be displayed on the main page.
 
+# Tests
+1. To run tests:
+   - go to `drinks` directory
+   - `python manage.py test`
+2. To view code coverage:
+   - `coverage run manage.py test -v 2`
+   - `coverage html`
+   - open `htmlcov/index.html` in browser
 
-# TODO:
-- [ ] add tests for search bar
-- [ ] fix static urls in tests
+
+# TODO
+- [ ] handle image formats other than `jpg`
 - [ ] add product management view
 - [ ] set default image for drinks
 - [ ] handle upper and lowercase unicode characters in search bar same way
-- [ ] add like counter recalculation option
-- [ ] add drink card folding
 - [ ] improve product select in drink form
+- [ ] add drink card folding
+- [ ] add tests for search bar
+- [ ] fix static urls in tests
+- [ ] add like counter recalculation option
+
+
+
+
+
+
