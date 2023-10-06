@@ -11,7 +11,7 @@ If you want to, you can change your password via special form.
 This project is based on Python 3.11 and uses [Django framework](https://www.djangoproject.com/)
 and [Bootstrap](https://getbootstrap.com/) for styling.
 
-## Getting started
+# Getting started
 
 1. Clone this repository.
 2. Create virtual environment:
@@ -39,7 +39,7 @@ and [Bootstrap](https://getbootstrap.com/) for styling.
 
 7. To access admin panel go to `http://127.0.0.1:8000/admin/`
 
-## How to use the project
+# How to use the project
 
 1. On main page:
     - you can see list of drinks
@@ -61,5 +61,12 @@ and [Bootstrap](https://getbootstrap.com/) for styling.
    If you want to share it with others, mark it as public. The drink will be displayed on the main page.
 
 
-   
-
+# TODO:
+- [ ] add tests for search bar
+- [ ] fix static urls in tests
+- [ ] add product management view
+- [ ] set default image for drinks
+- [ ] handle upper and lowercase unicode characters in search bar same way
+- [ ] add like counter recalculation option
+- [ ] add drink card folding
+- [ ] improve product select in drink form
