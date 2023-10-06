@@ -34,7 +34,7 @@ class DrinkForm(forms.ModelForm):
 
 class IngredientForm(forms.ModelForm):
     product = forms.ModelChoiceField(
-        queryset=Product.objects.all(),
+        queryset=Product.objects.all().order_by('name'),
         label='Produkt',
     )
     amount = forms.IntegerField(
@@ -45,7 +45,7 @@ class IngredientForm(forms.ModelForm):
         label='Ilość',
     )
     unit = forms.ModelChoiceField(
-        queryset=UnitType.objects.all(),
+        queryset=UnitType.objects.all().order_by('name'),
         label='Jednostka',
     )
     id = forms.IntegerField(
