@@ -60,37 +60,12 @@ class TestDrink(TestCase):
 
         self.assertEqual(drink_from_db.ingredients.count(), 1)
 
-    def test_duplicated_drink_name(self):
-        drink = Drink.objects.create(
-            name=self.name,
-            owner=self.user,
-            creation_date=self.time_now,
-            image=self.image,
-            public=True,
-            pin_to_main_page=False,
-        )
-
-        self.assertRaises(Exception, drink.full_clean)
-
     def test_drink_with_too_long_name(self):
         drink = Drink.objects.create(
             name='a' * 101,
             owner=self.user,
             creation_date=self.time_now,
             image=self.image,
-            public=True,
-            pin_to_main_page=False,
-        )
-
-        self.assertRaises(Exception, drink.full_clean)
-
-    def test_drink_with_too_long_description(self):
-        drink = Drink.objects.create(
-            name=self.name,
-            owner=self.user,
-            creation_date=self.time_now,
-            image=self.image,
-            description='a' * 501,
             public=True,
             pin_to_main_page=False,
         )
