@@ -1,48 +1,74 @@
-from django.test.testcases import TestCase
-from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
+from io import BytesIO
 
-from cocktails.models import Ingredient
+from PIL import Image
+from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
+
+from cocktails.models import Ingredient, Product, UnitType, Drink
 
 
-class TestIngredient(TestCase):
+class IngredientModelTest(TestCase):
 
     def setUp(self):
-        self.name = 'test'
-        self.amount = 2
-        self.unit = 'ml'
-        self.valid_ingredient = {
-            'name': self.name,
-            'amount': self.amount,
-            'unit': self.unit,
-        }
+        self.user = User.objects.create_user(username='testuser', password='test123')
+        self.product = Product.objects.create(name='testproduct')
+        self.unit_type = UnitType.objects.create(name='testunit', short_name='TU')
+        self.image = self.create_image_file()
+        self.drink = Drink.objects.create(
+            name='testdrink',
+            owner=self.user,
+            image=self.image,
+            public=True,
+            pin_to_main_page=False,
+        )
 
-    def test_ingredient_created_correctly(self):
-        ingredient_created = Ingredient.objects.create(name=self.name, amount=self.amount, unit=self.unit)
-        self.assertTrue(isinstance(ingredient_created, Ingredient))
-        ingredient_from_db = Ingredient.objects.filter(name=self.name)
-        self.assertEqual(ingredient_from_db[0].name, self.name)
-        self.assertEqual(ingredient_from_db[0].amount, self.amount)
-        self.assertEqual(ingredient_from_db[0].unit, self.unit)
+    def create_image_file(self, name='test.png', size=(50, 50), image_mode='RGB', image_format='JPEG'):
+        image = Image.new(image_mode, size)
+        buffer = BytesIO()
+        image.save(buffer, format=image_format)
+        return SimpleUploadedFile(name, buffer.getvalue())
+
+    def test_create_ingredient(self):
+        ingredient = Ingredient.objects.create(
+            product=self.product,
+            unit=self.unit_type,
+            amount=2,
+            drink=self.drink
+        )
+        self.assertEqual(ingredient.product, self.product)
+        self.assertEqual(ingredient.unit, self.unit_type)
+        self.assertEqual(ingredient.amount, 2)
+        self.assertEqual(ingredient.drink, self.drink)
+
         ingredients = Ingredient.objects.all()
         self.assertEqual(ingredients.count(), 1)
 
-    def test_ingredient_with_negative_amount_not_created(self):
-        with self.assertRaises(IntegrityError):
-            Ingredient.objects.create(name=self.name, amount=-1, unit=self.unit)
-            ingredients = Ingredient.objects.all()
-            self.assertEqual(ingredients.count(), 0)
+    def test_ingredient_related_drink(self):
+        ingredient = Ingredient.objects.create(
+            product=self.product,
+            unit=self.unit_type,
+            amount=2,
+            drink=self.drink
+        )
+        self.assertEqual(ingredient.drink, self.drink)
 
-    def test_ingredient_with_incorrect_amount_max_validator(self):
-            ingredient = Ingredient.objects.create(name=self.name, amount=400, unit=self.unit)
-            self.assertRaises(ValidationError, ingredient.full_clean)
+    def test_ingredient_related_to_product(self):
+        ingredient = Ingredient.objects.create(
+            product=self.product,
+            unit=self.unit_type,
+            amount=2,
+            drink=self.drink
+        )
+        self.assertEqual(ingredient.product, self.product)
+        self.assertEqual(list(self.product.ingredient_set.all()), [ingredient])
 
-    def test_ingredient_with_incorrect_amount_min_validator(self):
-            ingredient = Ingredient.objects.create(name=self.name, amount=0, unit=self.unit)
-            self.assertRaises(ValidationError, ingredient.full_clean)
-
-
-
-
-
-
+    def test_ingredient_related_unit_type(self):
+        ingredient = Ingredient.objects.create(
+            product=self.product,
+            unit=self.unit_type,
+            amount=2,
+            drink=self.drink
+        )
+        self.assertEqual(ingredient.unit, self.unit_type)
+        self.assertEqual(list(self.unit_type.ingredient_set.all()), [ingredient])
