@@ -16,7 +16,7 @@ def random_string(length):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=220)
+    name = models.CharField(max_length=220, unique=True)
 
     def __str__(self):
         return self.name
@@ -31,7 +31,7 @@ class UnitType(models.Model):
 
 
 class Drink(models.Model):
-    name = models.CharField(max_length=100, blank=False)
+    name = models.CharField(max_length=100, blank=False, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
