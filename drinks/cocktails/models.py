@@ -41,6 +41,9 @@ class Drink(models.Model):
     pin_to_main_page = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0, editable=False)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return f'{self.name} | {self.creation_date} | {self.description}'
 
