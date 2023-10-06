@@ -29,10 +29,12 @@ def home(request):
 def search(request):
     if request.method == 'GET':
         query = request.GET.get('q')
+
         drinks = Drink.objects.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query) |
-            Q(ingredient__product__name__icontains=query)
+                Q(name__icontains=query) |
+                Q(description__icontains=query) |
+                Q(ingredient__product__name__icontains=query),
+                Q(public=True) | Q(owner=request.user) if request.user.is_authenticated else Q(public=True)
         ).distinct()
         total_count = drinks.count()
         last_added_cocktails, _ = get_last_addedd_cocktails()
