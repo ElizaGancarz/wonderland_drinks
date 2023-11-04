@@ -12,7 +12,7 @@ class TestLogin(TestCase):
     def test_get_login_form(self):
         response = self.client.get(reverse('login_user'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login_user.html')
+        self.assertTemplateUsed(response, 'change_password.html')
 
     def test_login_when_positive_credentials(self):
         response = self.client.post(reverse('login_user'), data={'username': 'testuser', 'password': '123'})

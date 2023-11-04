@@ -72,6 +72,7 @@ def edit_drink(request, drink_id):
         if drink_form.is_valid() and ingredient_formset.is_valid():
             drink_form.save()
             ingredient_formset.save()
+            # delete ingredients that were removed from the form
             form_ingredients = [form.instance for form in ingredient_formset]
             for ingredient in drink.ingredients.all():
                 if ingredient not in form_ingredients:

@@ -1,13 +1,11 @@
 import random
 import string
-import os
+from io import BytesIO
 
 from PIL import Image
-from io import BytesIO
-from django.db import models
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import models
 
 
 def random_string(length):
@@ -59,7 +57,6 @@ class Drink(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-
         self.thumbnail = self.create_thumbnail()
         super(Drink, self).save(*args, **kwargs)
 
