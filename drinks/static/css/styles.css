@@ -48,14 +48,17 @@ body {
 }
 
 header{
-    background-color:  #fdd02e;
+    background-color:  #FF9616;
+    .slogan {
+      font-family: Garamond, Garamond, Serif;
+    }
 
 }
 
 
 .slogan{
     color: #090b17;
-  font-family: Mulish ,Arial,sans-serif;
+  font-family: Mulish, Arial, sans-serif;
   font-size: 38px;
   font-weight: 700;
   line-height: 60px;
